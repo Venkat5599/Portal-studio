@@ -3,16 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "workspaces": [
-    "frontend",
-    "packages/agents",
-    "packages/sdk/*"
+    "frontend"
   ],
   "scripts": {
     "dev": "npm --prefix frontend run dev --",
     "build": "npm --prefix frontend run build --",
     "start": "npm --prefix frontend run start --",
     "lint": "npm --prefix frontend run lint",
-    "typecheck": "npm --prefix frontend run typecheck",
-    "sdk:build": "npm --prefix packages/sdk/mantleguard run build"
+    "typecheck": "npm --prefix frontend run typecheck"
   }
 }
