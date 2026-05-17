@@ -1,5 +1,5 @@
 {
-  "name": "mantleguard-ai",
+  "name": "palletman",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -25,8 +25,7 @@
     "next": "16.1.1",
     "next-themes": "^0.4.6",
     "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "viem": "^2.49.0"
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

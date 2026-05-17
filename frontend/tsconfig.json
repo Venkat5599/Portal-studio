@@ -34,7 +34,6 @@
       "@/*": ["./*"],
       "@/components/*": ["./components/*"],
       "@/lib/*": ["./lib/*"],
-      "@mantleguard/agents": ["../../packages/agents/src/index.ts"],
       "@/styles/*": ["./styles/*"]
     }
   },

@@ -1,47 +1,45 @@
-# MantleGuard Architecture
+# PalletMan Architecture
 
-MantleGuard is organized as a monorepo so product areas can grow independently.
+PalletMan is a single Next.js application that connects directly to the Portaldot network via WebSocket RPC.
 
-```text
-apps/frontend            Next.js app, landing page, RAG agent UI, API routes
-packages/contracts       Solidity contracts for on-chain attestations
-packages/sdk             Developer SDK for integrating the AI firewall
-packages/agents          RAG orchestrator, model clients, security tool planning
-docs                     Product, architecture, deployment, and demo notes
+## Structure
+
+```
+frontend/
+├── app/
+│   ├── page.tsx          # Landing page
+│   └── app/page.tsx      # Studio — the main tool
+├── components/
+│   ├── studio/           # Core tool UI
+│   │   ├── pallet-sidebar.tsx    # Lists all pallets + extrinsics/storage
+│   │   ├── extrinsic-panel.tsx   # Form builder for any extrinsic
+│   │   ├── storage-panel.tsx     # Storage query interface
+│   │   ├── result-panel.tsx      # Transaction result + history
+│   │   └── wallet-button.tsx     # Polkadot.js wallet connection
+│   └── ...               # Landing page sections
+├── hooks/
+│   ├── use-polkadot-api.ts   # WS connection, metadata parsing, block subscription
+│   ├── use-wallet.ts          # Polkadot.js extension integration
+│   └── use-extrinsic.ts       # Fee estimation + tx signing + broadcasting
+├── lib/
+│   ├── polkadot.ts        # ApiPromise singleton
+│   └── type-mapper.ts     # Substrate type → HTML input field mapping
+└── constants/
+    └── network.ts         # RPC endpoint, POT decimals
 ```
 
-The current vertical slice is intentionally real-data-first:
+## How it works
 
-- AI responses require a configured provider key.
-- Mantle status comes from a real RPC endpoint.
-- On-chain attestations require a deployed contract address.
-- The app does not fabricate findings, alerts, scores, or transaction hashes.
+1. On load, `use-polkadot-api` opens a WebSocket to `wss://rpc.portaldot.io` via `@polkadot/api`
+2. It fetches runtime metadata and parses every pallet, extrinsic, and storage item
+3. `type-mapper` converts Substrate types (e.g. `AccountId32`, `u128`, `Bytes`) into appropriate form fields
+4. The user selects a pallet and extrinsic — `extrinsic-panel` renders the auto-generated form
+5. `use-extrinsic` calls `paymentInfo()` for fee estimation and `signAndSend()` via the Polkadot.js extension
+6. POT is used as gas — no other token, no bridging
+7. Storage queries use `api.query[pallet][item]()` and decode the result via `@polkadot/types`
 
-## Agent Pipeline
+## Key design decisions
 
-```text
-User Query
-  -> Agent Orchestrator
-  -> Intent Classifier (trade, approval, deployment, admin, audit)
-  -> RAG Retrieval (audit dataset + docs + past exploits)
-  -> Deterministic Protection Agents (trading risk, approval risk, gas)
-  -> DeepSeek V4 Flash through OpenRouter
-  -> Tool Calls (Slither, Foundry, Mythril, Echidna, Tenderly)
-  -> Allow / Warn / Block + Risk Analysis + Patch Suggestions
-```
-
-Security tools are planned by the orchestrator today, but execution stays in
-`not_configured` status until real local or hosted runners are attached. This is
-intentional: MantleGuard should report missing tool infrastructure instead of
-inventing scanner output.
-
-## Agentic Protection
-
-MantleGuard is a pre-execution firewall for AI agents, trading bots, wallets,
-and dApps. Developers call SDK hooks such as `beforeTrade`,
-`beforeApproval`, `beforeTransaction`, and `beforeDeploy` before execution. The
-agent returns a deterministic policy verdict, gas suggestions, RAG citations,
-tool status, and an LLM explanation grounded in the retrieved context.
-
-The verdict can be attested on Mantle with `attestFirewallVerdict`, storing only
-hashes and metadata on-chain while preserving a verifiable audit trail.
+- **No backend** — everything runs client-side. The only network call is the WebSocket to the Portaldot RPC.
+- **Metadata-driven** — the UI is fully generated from the chain's own runtime metadata. No hardcoded pallet lists.
+- **POT native** — all fee estimation and submission uses Portaldot's native token as gas.

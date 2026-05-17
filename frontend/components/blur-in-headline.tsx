@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
 const headline =
-  "Mantle Firewall turns AI security into verifiable on-chain infrastructure: every scan explains the risk, every agent decision can be audited, and every protected action strengthens Mantle's trust layer.";
+  "PalletMan brings Portaldot's runtime to your browser: every pallet is explorable, every extrinsic is submittable, and every storage item is queryable — with POT as gas, no code required.";
 
 export function BlurInHeadline(): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null);
