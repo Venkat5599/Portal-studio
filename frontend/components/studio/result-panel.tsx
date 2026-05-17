@@ -114,9 +114,11 @@ function TxCard({ tx, expanded, onToggle }: { tx: TxResult; expanded: boolean; o
 export function ResultPanel({
   current,
   history,
+  embedded = false,
 }: {
   current: TxResult | null;
   history: TxResult[];
+  embedded?: boolean;
 }): ReactNode {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -127,12 +129,14 @@ export function ResultPanel({
     ? [current, ...history.filter((h) => h.id !== current.id)]
     : history;
 
-  return (
-    <aside className="w-80 shrink-0 flex flex-col border-l border-border bg-background h-full overflow-hidden">
-      <div className="p-4 border-b border-border">
-        <h3 className="text-sm font-semibold text-foreground">Result & History</h3>
-        <p className="text-xs text-muted-foreground mt-0.5">Last {allTx.length} transactions</p>
-      </div>
+  const inner = (
+    <>
+      {!embedded && (
+        <div className="p-4 border-b border-border">
+          <h3 className="text-sm font-semibold text-foreground">Result & History</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">Last {allTx.length} transactions</p>
+        </div>
+      )}
 
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {allTx.length === 0 ? (
@@ -152,6 +156,16 @@ export function ResultPanel({
           ))
         )}
       </div>
+    </>
+  );
+
+  if (embedded) {
+    return <div className="flex flex-col h-full overflow-hidden">{inner}</div>;
+  }
+
+  return (
+    <aside className="w-80 shrink-0 flex flex-col border-l border-border bg-background h-full overflow-hidden">
+      {inner}
     </aside>
   );
 }

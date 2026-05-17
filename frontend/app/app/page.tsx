@@ -2,15 +2,17 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { AlertCircle, Radio, Wifi, WifiOff, ArrowLeft, LayoutGrid } from "lucide-react";
+import { AlertCircle, Radio, Wifi, WifiOff, ArrowLeft, LayoutGrid, BookMarked, Clock } from "lucide-react";
 import type { PalletMeta, ExtrinsicMeta, StorageItemMeta } from "@/types/polkadot";
 import { usePolkadotApi } from "@/hooks/use-polkadot-api";
 import { useWallet } from "@/hooks/use-wallet";
 import { useExtrinsic } from "@/hooks/use-extrinsic";
+import type { SavedCall } from "@/hooks/use-registry";
 import { PalletSidebar } from "@/components/studio/pallet-sidebar";
 import { ExtrinsicPanel } from "@/components/studio/extrinsic-panel";
 import { StoragePanel } from "@/components/studio/storage-panel";
 import { ResultPanel } from "@/components/studio/result-panel";
+import { RegistryPanel } from "@/components/studio/registry-panel";
 import { WalletButton } from "@/components/studio/wallet-button";
 import { Spinner } from "@/components/ui/spinner";
 import { Badge } from "@/components/ui/badge";
@@ -101,6 +103,8 @@ function EmptyState(): ReactNode {
   );
 }
 
+type RightTab = "results" | "registry";
+
 export default function StudioPage(): ReactNode {
   const { api, status, pallets, chainName, blockNumber, connect } = usePolkadotApi();
   const wallet = useWallet();
@@ -108,6 +112,8 @@ export default function StudioPage(): ReactNode {
 
   const [active, setActive] = useState<ActiveSelection>(null);
   const [estimatedFee, setEstimatedFee] = useState("");
+  const [rightTab, setRightTab] = useState<RightTab>("results");
+  const [lastParams, setLastParams] = useState<Record<string, string>>({});
 
   useEffect(() => {
     void connect(PORTALDOT_RPC);
@@ -133,19 +139,31 @@ export default function StudioPage(): ReactNode {
 
   const handleEstimateFee = async (params: Record<string, string>) => {
     if (!api || !wallet.selected || !active || active.type !== "extrinsic") return;
+    setLastParams(params);
     const fee = await estimateFee(api, active.pallet, active.name, params, wallet.selected.address);
     setEstimatedFee(fee);
   };
 
   const handleSubmit = (params: Record<string, string>) => {
     if (!api || !wallet.selected || !active || active.type !== "extrinsic") return;
+    setLastParams(params);
     void submit(api, active.pallet, active.name, params, wallet.selected.address);
   };
 
   const handleStorageResult = () => {};
 
+  const handleLoadSavedCall = (call: SavedCall) => {
+    setActive({ pallet: call.pallet, type: "extrinsic", name: call.extrinsic });
+    setRightTab("results");
+  };
+
   const activeExtrinsic = getActiveExtrinsic();
   const activeStorage = getActiveStorage();
+
+  const pendingCall =
+    active?.type === "extrinsic"
+      ? { pallet: active.pallet, extrinsic: active.name, paramsJson: JSON.stringify(lastParams) }
+      : undefined;
 
   return (
     <div className="flex flex-col h-screen bg-background overflow-hidden">
@@ -220,8 +238,48 @@ export default function StudioPage(): ReactNode {
           )}
         </main>
 
-        {/* Result panel */}
-        <ResultPanel current={result} history={history} />
+        {/* Right panel — Results or Saved Calls */}
+        <div className="w-80 shrink-0 flex flex-col border-l border-border bg-background h-full overflow-hidden">
+          {/* Tab bar */}
+          <div className="flex border-b border-border shrink-0">
+            <button
+              onClick={() => setRightTab("results")}
+              className={`flex flex-1 items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-medium transition ${
+                rightTab === "results"
+                  ? "text-foreground border-b-2 border-foreground -mb-px"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Clock className="h-3.5 w-3.5" />
+              Results
+            </button>
+            <button
+              onClick={() => setRightTab("registry")}
+              className={`flex flex-1 items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-medium transition ${
+                rightTab === "registry"
+                  ? "text-foreground border-b-2 border-foreground -mb-px"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <BookMarked className="h-3.5 w-3.5" />
+              Saved Calls
+            </button>
+          </div>
+
+          {/* Tab content — full height, overflow managed inside each panel */}
+          <div className="flex-1 overflow-hidden">
+            {rightTab === "results" ? (
+              <ResultPanel current={result} history={history} embedded />
+            ) : (
+              <RegistryPanel
+                api={api}
+                walletAddress={wallet.selected?.address}
+                onLoad={handleLoadSavedCall}
+                pendingCall={pendingCall}
+              />
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

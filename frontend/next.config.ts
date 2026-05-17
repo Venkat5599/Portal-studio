@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: [
     "@polkadot/api",
+    "@polkadot/api-contract",
     "@polkadot/types",
     "@polkadot/rpc-provider",
     "@polkadot/util",
