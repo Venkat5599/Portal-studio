@@ -3,7 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { AlertCircle, Radio, Wifi, WifiOff, ArrowLeft, LayoutGrid } from "lucide-react";
-import type { PalletMeta, ExtrinsicMeta, StorageItemMeta, StorageResult } from "@/types/polkadot";
+import type { PalletMeta, ExtrinsicMeta, StorageItemMeta } from "@/types/polkadot";
 import { usePolkadotApi } from "@/hooks/use-polkadot-api";
 import { useWallet } from "@/hooks/use-wallet";
 import { useExtrinsic } from "@/hooks/use-extrinsic";
@@ -108,7 +108,6 @@ export default function StudioPage(): ReactNode {
 
   const [active, setActive] = useState<ActiveSelection>(null);
   const [estimatedFee, setEstimatedFee] = useState("");
-  const [storageResults, setStorageResults] = useState<StorageResult[]>([]);
 
   useEffect(() => {
     void connect(PORTALDOT_RPC);
@@ -143,9 +142,7 @@ export default function StudioPage(): ReactNode {
     void submit(api, active.pallet, active.name, params, wallet.selected.address);
   };
 
-  const handleStorageResult = (r: StorageResult) => {
-    setStorageResults((prev) => [r, ...prev].slice(0, 20));
-  };
+  const handleStorageResult = () => {};
 
   const activeExtrinsic = getActiveExtrinsic();
   const activeStorage = getActiveStorage();

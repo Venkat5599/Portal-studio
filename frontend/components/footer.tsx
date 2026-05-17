@@ -10,7 +10,7 @@ const footerLinks = {
     { label: "Hackathon", href: "#tracks" },
   ],
   company: [
-    { label: "GitHub", href: "#" },
+    { label: "GitHub", href: "https://github.com/Venkat5599/Portal-studio" },
     { label: "Portaldot Discord", href: "https://discord.gg/portaldot" },
     { label: "Portaldot Docs", href: "https://portaldot-dev.readthedocs.io/en/latest/" },
   ],

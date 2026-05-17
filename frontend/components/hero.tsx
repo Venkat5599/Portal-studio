@@ -1,7 +1,7 @@
 "use client";
 
 import { LogoLoop, type LogoItem } from "@/components/logo-loop";
-import { ArrowDownRight, Activity, ShieldCheck, TriangleAlert } from "lucide-react";
+import { ArrowDownRight, Activity, ShieldCheck } from "lucide-react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import { useRef, type ReactNode, type MouseEvent } from "react";
 

@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import type { ApiPromise } from "@polkadot/api";
 import type { DecodedEvent, TxResult, TxStatus } from "@/types/polkadot";
-import { parseBalanceInput, formatBalance } from "@/lib/type-mapper";
+import { formatBalance } from "@/lib/type-mapper";
 import { POT_DECIMALS, POT_SYMBOL } from "@/constants/network";
 
 export function useExtrinsic() {
@@ -126,7 +126,7 @@ export function useExtrinsic() {
               status: finalStatus,
               blockHash,
               events: decoded,
-              error: hasError ? "Dispatch error occurred" : undefined,
+              ...(hasError ? { error: "Dispatch error occurred" } : {}),
               timestamp: Date.now(),
             };
 

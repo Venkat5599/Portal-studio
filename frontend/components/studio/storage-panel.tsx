@@ -45,7 +45,7 @@ export function StoragePanel({
       const storageResult: StorageResult = {
         pallet: item.palletName,
         item: item.name,
-        key: key.trim() || undefined,
+        ...(key.trim() ? { key: key.trim() } : {}),
         value,
         timestamp: Date.now(),
       };
