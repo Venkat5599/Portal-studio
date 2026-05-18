@@ -61,7 +61,7 @@ export function PalletSidebar({
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto p-2 space-y-0.5">
+      <nav className="flex-1 overflow-y-auto overscroll-contain p-2 space-y-0.5" style={{ touchAction: "pan-y" }}>
         {filtered.length === 0 && (
           <p className="px-3 py-6 text-center text-xs text-muted-foreground">
             {pallets.length === 0 ? "Connecting to Portaldot…" : "No pallets match"}
