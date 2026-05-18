@@ -6,17 +6,17 @@ import type { ReactNode } from "react";
 const footerLinks = {
   menu: [
     { label: "Studio", href: "/app" },
-    { label: "How it works", href: "#" },
+    { label: "How it works", href: "#how-it-works" },
     { label: "Hackathon", href: "#tracks" },
   ],
   company: [
     { label: "GitHub", href: "https://github.com/Venkat5599/Portal-studio" },
-    { label: "Portaldot Discord", href: "https://discord.gg/portaldot" },
     { label: "Portaldot Docs", href: "https://portaldot-dev.readthedocs.io/en/latest/" },
+    { label: "Node Setup Guide", href: "https://github.com/Investorquab/portaldot-node-guide" },
   ],
   social: [
-    { label: "X (Twitter)", href: "#" },
     { label: "Discord", href: "https://discord.gg/portaldot" },
+    { label: "GitHub", href: "https://github.com/Venkat5599/Portal-studio" },
   ],
 };
 

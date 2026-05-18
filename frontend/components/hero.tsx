@@ -159,7 +159,8 @@ export function Hero(): ReactNode {
 
           <h1 className="text-8xl max-[850px]:text-5xl font-medium tracking-tight leading-[1.1] mb-6 text-black">
             <motion.span
-              className="block"
+              className="block font-bold tracking-tighter"
+              style={{ fontFamily: "var(--font-space-grotesk)" }}
               variants={fadeInUp}
               transition={{ duration: 0.8, ease }}
             >

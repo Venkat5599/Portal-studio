@@ -5,7 +5,13 @@ import { ThemeSwitch } from "@/components/theme-switch";
 import { baseMetadata } from "@/lib/metadata";
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+});
 
 export const metadata: Metadata = baseMetadata;
 
@@ -27,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className="min-h-screen bg-background font-sans text-foreground antialiased"
+        className={`${spaceGrotesk.variable} min-h-screen bg-background font-sans text-foreground antialiased`}
       >
         <Providers>
           {/* Fixed frame */}
