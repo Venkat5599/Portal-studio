@@ -59,7 +59,7 @@ export function formatBalance(raw: string, decimals: number): string {
 
 export function parseBalanceInput(input: string, decimals: number): string {
   try {
-    const [whole, frac = ""] = input.split(".");
+    const [whole = "0", frac = ""] = input.split(".");
     const fracPadded = frac.padEnd(decimals, "0").slice(0, decimals);
     return (BigInt(whole) * BigInt(10 ** decimals) + BigInt(fracPadded || "0")).toString();
   } catch {

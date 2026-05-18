@@ -34,7 +34,8 @@ export function useRegistry(api: ApiPromise | null) {
         const { REGISTRY_ABI } = await import("@/lib/registry-abi");
         const contract = new ContractPromise(api, REGISTRY_ABI, address.trim());
         // Verify the contract exists by calling total_saves (read-only, no signer needed)
-        await contract.query.totalSaves("", { gasLimit: -1 });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (contract.query as any).totalSaves("", { gasLimit: -1 });
         localStorage.setItem("palletman_registry_address", address.trim());
         setContractAddressState(address.trim());
         setStatus("ready");
@@ -61,9 +62,10 @@ export function useRegistry(api: ApiPromise | null) {
         const { ContractPromise } = await import("@polkadot/api-contract");
         const { REGISTRY_ABI } = await import("@/lib/registry-abi");
         const contract = new ContractPromise(api, REGISTRY_ABI, contractAddress);
-        const { output } = await contract.query.getCalls("", { gasLimit: -1 }, accountAddress);
-        if (output?.isOk) {
-          const raw = output.asOk.toJSON() as Array<{
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { output, result } = await (contract.query as any).getCalls("", { gasLimit: -1 }, accountAddress) as { output: { toJSON: () => unknown } | null; result: { isOk: boolean } };
+        if (result.isOk && output) {
+          const raw = output.toJSON() as Array<{
             name: string;
             pallet: string;
             extrinsic: string;
@@ -71,7 +73,7 @@ export function useRegistry(api: ApiPromise | null) {
             savedAt: number;
           }>;
           setSavedCalls(
-            raw.map((c) => ({
+            (raw ?? []).map((c) => ({
               name: c.name,
               pallet: c.pallet,
               extrinsic: c.extrinsic,
@@ -103,19 +105,22 @@ export function useRegistry(api: ApiPromise | null) {
         const contract = new ContractPromise(api, REGISTRY_ABI, contractAddress);
         const injector = await web3FromAddress(senderAddress);
 
-        const { gasRequired } = await contract.query.saveCall(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { gasRequired } = await (contract.query as any).saveCall(
           senderAddress,
           { gasLimit: -1 },
           name,
           pallet,
           extrinsic,
           paramsJson
-        );
+        ) as { gasRequired: unknown };
 
         await new Promise<void>((resolve, reject) => {
-          void contract.tx
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          void (contract.tx as any)
             .saveCall({ gasLimit: gasRequired }, name, pallet, extrinsic, paramsJson)
-            .signAndSend(senderAddress, { signer: injector.signer }, ({ status: txStatus }) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .signAndSend(senderAddress, { signer: injector.signer as any }, ({ status: txStatus }: { status: { isFinalized: boolean } }) => {
               if (txStatus.isFinalized) resolve();
             })
             .catch(reject);
@@ -140,16 +145,19 @@ export function useRegistry(api: ApiPromise | null) {
         const contract = new ContractPromise(api, REGISTRY_ABI, contractAddress);
         const injector = await web3FromAddress(senderAddress);
 
-        const { gasRequired } = await contract.query.deleteCall(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { gasRequired } = await (contract.query as any).deleteCall(
           senderAddress,
           { gasLimit: -1 },
           index
-        );
+        ) as { gasRequired: unknown };
 
         await new Promise<void>((resolve, reject) => {
-          void contract.tx
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          void (contract.tx as any)
             .deleteCall({ gasLimit: gasRequired }, index)
-            .signAndSend(senderAddress, { signer: injector.signer }, ({ status: txStatus }) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .signAndSend(senderAddress, { signer: injector.signer as any }, ({ status: txStatus }: { status: { isFinalized: boolean } }) => {
               if (txStatus.isFinalized) resolve();
             })
             .catch(reject);

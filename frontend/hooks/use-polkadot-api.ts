@@ -20,7 +20,7 @@ export function usePolkadotApi() {
       const { getApi } = await import("@/lib/polkadot");
       const instance = await getApi(rpcUrl);
 
-      const [chain, meta] = await Promise.all([
+      const [chain] = await Promise.all([
         instance.rpc.system.chain(),
         instance.rpc.state.getMetadata(),
       ]);
@@ -55,58 +55,41 @@ function parseMetadata(api: ApiPromise): PalletMeta[] {
   const result: PalletMeta[] = [];
 
   try {
-    const meta = api.runtimeMetadata.asLatest;
-
-    for (const pallet of meta.pallets) {
-      const palletName = pallet.name.toString();
+    // Use api.tx / api.query — already decoded and version-normalised by @polkadot/api
+    for (const [camelPallet, txMethods] of Object.entries(api.tx)) {
+      const palletName = camelPallet.charAt(0).toUpperCase() + camelPallet.slice(1);
       const extrinsics: ExtrinsicMeta[] = [];
       const storage: StorageItemMeta[] = [];
-      const events: string[] = [];
 
-      if (pallet.calls.isSome) {
-        const callsType = pallet.calls.unwrap();
-        const callsDef = meta.lookup.getTypeDef(callsType.type);
+      for (const [txName, txFn] of Object.entries(txMethods as Record<string, { meta: { args: { name: { toString(): string }; type: { toString(): string } }[]; docs: { toString(): string }[] } }>)) {
+        try {
+          const params = txFn.meta.args.map((arg) => ({
+            name: arg.name.toString(),
+            typeName: arg.type.toString(),
+            fieldType: mapTypeToField(arg.type.toString()),
+            isOptional: arg.type.toString().startsWith("Option<"),
+          }));
+          extrinsics.push({ name: txName, palletName, params, docs: txFn.meta.docs.map((d) => d.toString()).join(" ") });
+        } catch { /* skip individual bad extrinsic */ }
+      }
 
-        if (callsDef.sub && Array.isArray(callsDef.sub)) {
-          for (const call of callsDef.sub) {
-            const callName = call.name?.toString() ?? "";
-            const params = Array.isArray(call.sub)
-              ? call.sub.map((p) => ({
-                  name: p.name?.toString() ?? "",
-                  typeName: p.type?.toString() ?? "unknown",
-                  fieldType: mapTypeToField(p.type?.toString() ?? ""),
-                  isOptional: p.type?.toString().startsWith("Option<") ?? false,
-                }))
-              : [];
-
-            extrinsics.push({
-              name: callName,
+      const queryPallet = (api.query as Record<string, Record<string, { meta: { type: { isMap: boolean; asMap: { key: { toString(): string }; value: { toString(): string } }; asPlain: { toString(): string } }; docs: { toString(): string }[] } }>>)[camelPallet];
+      if (queryPallet) {
+        for (const [queryName, queryFn] of Object.entries(queryPallet)) {
+          try {
+            const t = queryFn.meta.type;
+            storage.push({
+              name: queryName,
               palletName,
-              params,
-              docs: "",
+              keyType: t.isMap ? t.asMap.key.toString() : null,
+              valueType: t.isMap ? t.asMap.value.toString() : t.asPlain.toString(),
+              docs: queryFn.meta.docs.map((d) => d.toString()).join(" "),
             });
-          }
+          } catch { /* skip individual bad storage item */ }
         }
       }
 
-      if (pallet.storage.isSome) {
-        const storageItems = pallet.storage.unwrap().items;
-        for (const item of storageItems) {
-          storage.push({
-            name: item.name.toString(),
-            palletName,
-            keyType: item.type.isMap ? item.type.asMap.key.toString() : null,
-            valueType: item.type.isMap
-              ? item.type.asMap.value.toString()
-              : item.type.isNMap
-              ? item.type.asNMap.value.toString()
-              : item.type.asPlain.toString(),
-            docs: item.docs.join(" "),
-          });
-        }
-      }
-
-      result.push({ name: palletName, extrinsics, storage, events });
+      result.push({ name: palletName, extrinsics, storage, events: [] });
     }
   } catch (err) {
     console.error("Metadata parse error:", err);

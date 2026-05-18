@@ -16,7 +16,7 @@ import { RegistryPanel } from "@/components/studio/registry-panel";
 import { WalletButton } from "@/components/studio/wallet-button";
 import { Spinner } from "@/components/ui/spinner";
 import { Badge } from "@/components/ui/badge";
-import { NETWORK_NAME, PORTALDOT_RPC } from "@/constants/network";
+import { NETWORK_NAME, PORTALDOT_LOCAL_RPC, REGISTRY_CONTRACT_ADDRESS } from "@/constants/network";
 
 type ActiveSelection =
   | { pallet: string; type: "extrinsic"; name: string }
@@ -73,6 +73,7 @@ function ConnectionBar({
       {(status === "disconnected" || isError) && (
         <button
           onClick={onConnect}
+          suppressHydrationWarning
           className="ml-auto text-xs font-medium text-foreground hover:text-foreground/70 underline underline-offset-2 transition"
         >
           Connect
@@ -116,7 +117,7 @@ export default function StudioPage(): ReactNode {
   const [lastParams, setLastParams] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    void connect(PORTALDOT_RPC);
+    void connect(PORTALDOT_LOCAL_RPC);
   }, [connect]);
 
   useEffect(() => {
@@ -203,7 +204,7 @@ export default function StudioPage(): ReactNode {
         status={status}
         chainName={chainName}
         blockNumber={blockNumber}
-        onConnect={() => void connect(PORTALDOT_RPC)}
+        onConnect={() => void connect(PORTALDOT_LOCAL_RPC)}
       />
 
       {/* Main 3-panel layout */}
@@ -244,6 +245,7 @@ export default function StudioPage(): ReactNode {
           <div className="flex border-b border-border shrink-0">
             <button
               onClick={() => setRightTab("results")}
+              suppressHydrationWarning
               className={`flex flex-1 items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-medium transition ${
                 rightTab === "results"
                   ? "text-foreground border-b-2 border-foreground -mb-px"
@@ -255,6 +257,7 @@ export default function StudioPage(): ReactNode {
             </button>
             <button
               onClick={() => setRightTab("registry")}
+              suppressHydrationWarning
               className={`flex flex-1 items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-medium transition ${
                 rightTab === "registry"
                   ? "text-foreground border-b-2 border-foreground -mb-px"
@@ -275,7 +278,8 @@ export default function StudioPage(): ReactNode {
                 api={api}
                 walletAddress={wallet.selected?.address}
                 onLoad={handleLoadSavedCall}
-                pendingCall={pendingCall}
+                {...(pendingCall ? { pendingCall } : {})}
+                {...(REGISTRY_CONTRACT_ADDRESS ? { defaultContractAddress: REGISTRY_CONTRACT_ADDRESS } : {})}
               />
             )}
           </div>

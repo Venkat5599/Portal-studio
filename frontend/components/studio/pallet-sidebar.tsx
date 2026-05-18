@@ -36,6 +36,7 @@ export function PalletSidebar({
             placeholder="Search pallets…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            suppressHydrationWarning
             className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
           />
         </div>
@@ -44,6 +45,7 @@ export function PalletSidebar({
       <div className="flex border-b border-border">
         <button
           onClick={() => setTab("extrinsics")}
+          suppressHydrationWarning
           className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium transition ${tab === "extrinsics" ? "text-foreground border-b-2 border-foreground" : "text-muted-foreground hover:text-foreground"}`}
         >
           <Layers className="h-3.5 w-3.5" />
@@ -51,6 +53,7 @@ export function PalletSidebar({
         </button>
         <button
           onClick={() => setTab("storage")}
+          suppressHydrationWarning
           className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium transition ${tab === "storage" ? "text-foreground border-b-2 border-foreground" : "text-muted-foreground hover:text-foreground"}`}
         >
           <Database className="h-3.5 w-3.5" />

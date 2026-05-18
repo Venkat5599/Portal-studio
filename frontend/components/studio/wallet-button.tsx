@@ -34,6 +34,7 @@ export function WalletButton({
         <button
           onClick={onConnect}
           disabled={connecting}
+          suppressHydrationWarning
           className="inline-flex items-center gap-2 rounded-xl bg-foreground px-4 py-2 text-sm font-semibold text-background transition hover:bg-foreground/85 disabled:opacity-50"
         >
           {connecting ? <Spinner size={14} /> : <Wallet className="h-4 w-4" />}

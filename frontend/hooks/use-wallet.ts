@@ -29,7 +29,7 @@ export function useWallet() {
       }));
 
       setAccounts(mapped);
-      if (mapped.length > 0) setSelected(mapped[0]);
+      if (mapped.length > 0) setSelected(mapped[0] ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Wallet connection failed");
     } finally {

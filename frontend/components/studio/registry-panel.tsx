@@ -12,7 +12,7 @@ import {
   ChevronUp,
   Database,
 } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import type { ApiPromise } from "@polkadot/api";
 import type { SavedCall } from "@/hooks/use-registry";
 import { useRegistry } from "@/hooks/use-registry";
@@ -30,18 +30,22 @@ type RegistryPanelProps = {
     extrinsic: string;
     paramsJson: string;
   };
+  /** Pre-deployed contract address — auto-connects on mount if provided */
+  defaultContractAddress?: string;
 };
 
 function ConnectForm({
   onConnect,
   connecting,
   error,
+  defaultAddress,
 }: {
   onConnect: (addr: string) => void;
   connecting: boolean;
   error: string | null;
+  defaultAddress: string | undefined;
 }): ReactNode {
-  const [addr, setAddr] = useState("");
+  const [addr, setAddr] = useState(defaultAddress ?? "");
 
   return (
     <div className="p-4 space-y-3">
@@ -197,13 +201,24 @@ export function RegistryPanel({
   walletAddress,
   onLoad,
   pendingCall,
+  defaultContractAddress,
 }: RegistryPanelProps): ReactNode {
   const registry = useRegistry(api);
+  const { connect: registryConnect, fetchCalls, status: registryStatus } = registry;
   const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
 
+  // Auto-connect if a pre-deployed address is provided and api is ready
+  useEffect(() => {
+    if (defaultContractAddress && api && registryStatus === "disconnected") {
+      void registryConnect(defaultContractAddress).then(() => {
+        if (walletAddress) void fetchCalls(walletAddress);
+      });
+    }
+  }, [defaultContractAddress, api, registryStatus, registryConnect, fetchCalls, walletAddress]);
+
   const handleConnect = async (addr: string) => {
-    await registry.connect(addr);
-    if (walletAddress) await registry.fetchCalls(walletAddress);
+    await registryConnect(addr);
+    if (walletAddress) await fetchCalls(walletAddress);
   };
 
   const handleDelete = async (index: number) => {
@@ -215,13 +230,7 @@ export function RegistryPanel({
 
   const handleSave = async (name: string): Promise<boolean> => {
     if (!pendingCall || !walletAddress) return false;
-    return registry.saveCall(
-      name,
-      pendingCall.pallet,
-      pendingCall.extrinsic,
-      pendingCall.paramsJson,
-      walletAddress
-    );
+    return registry.saveCall(name, pendingCall.pallet, pendingCall.extrinsic, pendingCall.paramsJson, walletAddress);
   };
 
   return (
@@ -265,8 +274,9 @@ export function RegistryPanel({
       {registry.status !== "ready" ? (
         <ConnectForm
           onConnect={(addr) => void handleConnect(addr)}
-          connecting={registry.status === "connecting"}
+          connecting={registryStatus === "connecting"}
           error={registry.error}
+          defaultAddress={defaultContractAddress}
         />
       ) : (
         <div className="flex-1 overflow-y-auto p-3 space-y-2">
