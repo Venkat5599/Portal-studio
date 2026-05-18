@@ -20,6 +20,14 @@
   <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript" alt="TypeScript" />
 </p>
 
+<p align="center">
+  <a href="https://youtu.be/mVH80GSLKuE">🎬 Demo Video</a> &nbsp;|&nbsp;
+  <a href="https://palletman-frontend.vercel.app">🌐 Live App</a> &nbsp;|&nbsp;
+  <a href="https://github.com/Venkat5599/Palletman">💻 GitHub</a> &nbsp;|&nbsp;
+  <a href="https://x.com/Archuser__">🐦 Twitter</a> &nbsp;|&nbsp;
+  <a href="https://linkedin.com/in/venkata-ramana-komari-402058316">👤 LinkedIn</a>
+</p>
+
 ---
 
 ## 📋 What is PalletMan?
@@ -249,6 +257,18 @@ Derivation path:  //Alice
 - [ ] Switch RPC endpoint from the UI
 - [ ] ink! contract interaction panel
 - [ ] Export calls as Python SDK code snippets
+
+---
+
+## 🔗 Links
+
+| Resource | URL |
+|---|---|
+| **Demo Video** | [youtube.com/watch?v=mVH80GSLKuE](https://youtu.be/mVH80GSLKuE) |
+| **Live App** | [palletman-frontend.vercel.app](https://palletman-frontend.vercel.app) |
+| **GitHub** | [github.com/Venkat5599/Palletman](https://github.com/Venkat5599/Palletman) |
+| **Twitter** | [@Archuser__](https://x.com/Archuser__) |
+| **LinkedIn** | [Venkata Ramana Komari](https://linkedin.com/in/venkata-ramana-komari-402058316) |
 
 ---
 
