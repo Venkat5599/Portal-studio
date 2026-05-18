@@ -1,113 +1,255 @@
-# PalletMan
+<p align="center">
+  <img src="./banner.png" alt="PalletMan Banner" width="100%" />
+</p>
 
-**Postman for Portaldot.** Explore every pallet, build any extrinsic, query live storage, and submit signed transactions using POT as gas — all from your browser. No code required.
+<p align="center">
+  <img src="https://img.shields.io/badge/🟣-PalletMan-7C3AED?style=for-the-badge&labelColor=0a0f12" alt="PalletMan" />
+</p>
 
-Submitted to the **Portaldot Mini Hackathon Online Season 1 (2026)** — Builder Tools track.
+<h1 align="center">PalletMan</h1>
 
----
+<p align="center">
+  <strong>Postman for Portaldot — Browser-Based Pallet Explorer & Transaction Builder</strong>
+</p>
 
-## What it does
-
-Portaldot developers today have to read docs, write scripts, and dig through runtime metadata just to test a single extrinsic call. PalletMan removes all of that friction.
-
-Open the app, connect your Polkadot.js wallet, and you get:
-
-- **Pallet Explorer** — auto-fetches all pallets and extrinsics directly from the live Portaldot node metadata
-- **Extrinsic Builder** — auto-generates the correct input form for every parameter with the right types
-- **Fee Estimator** — estimates the POT fee before you sign anything
-- **Sign & Submit** — signs and broadcasts the transaction via your connected wallet; POT is used as gas
-- **Storage Queries** — query any storage item from any pallet and see the decoded live value
-- **Transaction History** — tracks every submission with block hash, events, and final status
-
----
-
-## Demo
-
-> Live: [palletman.xyz](https://palletman.xyz)
-
-**Full flow:**
-1. Open the studio
-2. Connect your Polkadot.js wallet extension
-3. Pick a pallet from the sidebar (e.g. `Balances`)
-4. Select an extrinsic (e.g. `transfer`)
-5. Fill in the auto-generated form
-6. Hit **Estimate fee** → **Sign & Submit**
-7. Watch the transaction finalize on Portaldot in real time
+<p align="center">
+  <img src="https://img.shields.io/badge/🟢_LIVE-Portaldot_Testnet-00FF88?style=for-the-badge" alt="Live on Portaldot" />
+  <img src="https://img.shields.io/badge/Track-Builder_Tools-7C3AED?style=for-the-badge" alt="Builder Tools" />
+  <img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript" alt="TypeScript" />
+</p>
 
 ---
 
-## Tech stack
+## 📋 Project Overview
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 16 + React 19 |
-| Language | TypeScript |
-| Styling | Tailwind CSS v4 |
-| Chain | `@polkadot/api` |
-| Wallet | `@polkadot/extension-dapp` |
-| Network | Portaldot (`wss://rpc.portaldot.io`) |
-| Gas | POT (Portaldot native token) |
+**PalletMan** is the first browser-based developer tool for the Portaldot blockchain. It auto-discovers every pallet from a live node, generates transaction forms automatically, and lets developers submit signed transactions — all without writing a single line of code.
+
+> The only existing way to interact with Portaldot today is the official Python SDK. PalletMan is the GUI alternative.
+
+### What It Does
+
+- **Auto-discovers pallets** — connects to any Portaldot node via WebSocket and reads live metadata
+- **Generates extrinsic forms** — pick a pallet, pick a call, fill the form — no ABI files needed
+- **Queries live storage** — read chain state in one click, no RPC calls to write
+- **Estimates fees** — shows exact POT cost before signing
+- **Submits signed transactions** — integrates with Portaldot wallet extension
+- **Saves calls** — bookmark common extrinsics like a Postman collection
+
+### Key Innovation
+
+```
+Before PalletMan:   Developer → Write Python SDK code → Submit → Debug
+With PalletMan:     Developer → Open browser → Click → Done
+```
 
 ---
 
-## Run locally
+## 🌐 Why This Matters for Portaldot
+
+| Problem | PalletMan Solution |
+|---|---|
+| Interacting with pallets requires writing Python SDK code | Browser GUI — no code needed |
+| No visual way to explore what pallets/extrinsics exist | Auto-discovers and lists everything from live node |
+| Testing transactions requires a full dev environment | Works in any browser with a wallet extension |
+| No way to share common calls across a team | Saved Calls panel — reuse and share extrinsics |
+| Fee estimation requires manual calculation | Built-in fee estimator before every submit |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- [Node.js 18+](https://nodejs.org)
+- Portaldot wallet extension installed in your browser
+- A running Portaldot node (local or remote)
+
+### Run a Local Portaldot Node (WSL2 / Linux)
 
 ```bash
+# Download the node binary
+cd ~
+wget https://github.com/portaldotVolunteer/Portaldot-node/raw/main/portaldot-testnet-ubuntu.tar.gz
+tar -xzvf portaldot-testnet-ubuntu.tar.gz
+cd portaldot-testnet-ubuntu
+chmod +x portaldot_dev
+
+# Terminal 1 — Start Alice node
+./portaldot_dev --dev --alice --name MyNode --base-path /tmp/alice
+
+# Terminal 2 — Start Bob node (paste Alice's Peer ID from Terminal 1 logs)
+./portaldot_dev --dev --bob --name MyNode_Bob \
+  --base-path /tmp/bob \
+  --port 30334 \
+  --rpc-port 9945 \
+  --bootnodes /ip4/127.0.0.1/tcp/30333/p2p/<ALICE_PEER_ID>
+```
+
+Success: both terminals show `💤 Idle (1 peers)`
+
+### Run the Frontend
+
+```bash
+# 1. Clone the repository
 git clone https://github.com/Venkat5599/Portal-studio.git
 cd Portal-studio/frontend
+
+# 2. Install dependencies
 npm install
+
+# 3. Start development server
 npm run dev
-```
 
-Open [http://localhost:3000](http://localhost:3000).
-
-You need the **Polkadot.js browser extension** installed to connect a wallet and submit transactions.
-
----
-
-## Project structure
-
-```
-portaldot/
-├── frontend/                  # Next.js app
-│   ├── app/
-│   │   ├── page.tsx           # Landing page
-│   │   └── app/page.tsx       # Studio (main tool)
-│   ├── components/
-│   │   ├── studio/            # Core tool components
-│   │   │   ├── pallet-sidebar.tsx
-│   │   │   ├── extrinsic-panel.tsx
-│   │   │   ├── storage-panel.tsx
-│   │   │   ├── result-panel.tsx
-│   │   │   └── wallet-button.tsx
-│   │   └── ...                # Landing page sections
-│   ├── hooks/
-│   │   ├── use-polkadot-api.ts  # Chain connection + metadata parsing
-│   │   ├── use-wallet.ts        # Polkadot.js extension integration
-│   │   └── use-extrinsic.ts     # Fee estimation + tx submission
-│   ├── lib/
-│   │   ├── polkadot.ts          # API singleton
-│   │   └── type-mapper.ts       # Runtime type → form field mapping
-│   └── constants/
-│       └── network.ts           # RPC endpoint, POT decimals
-└── docs/
-    └── architecture.md
+# 4. Open http://localhost:3000/app
 ```
 
 ---
 
-## How POT is used as gas
+## 🖥️ Demo Flow
 
-Every extrinsic submitted through PalletMan goes through the live Portaldot node. The fee is paid in POT automatically — the tool calls `paymentInfo()` to estimate the fee before you sign, and `signAndSend()` via your wallet extension to broadcast it. No wrapped tokens, no bridging.
+**1. Connect** — wallet auto-detected, pallets load from live chain
+
+**2. Browse pallets** — sidebar lists all pallets with extrinsic and storage counts
+
+**3. Build a transaction**
+   - Click `Balances` → `transfer`
+   - Fill `dest` (recipient address) and `value` (amount in planck)
+   - Click **Estimate Fee** — see exact POT cost before signing
+
+**4. Submit** — wallet signs, transaction finalizes on chain, result appears in Results panel with block hash and events
+
+**5. Query storage** — switch to Storage tab → `Balances` → `Account` → paste an address → see live balance
+
+**6. Save calls** — click Saved Calls tab, save the transfer, reload it anytime — like a Postman collection
 
 ---
 
-## AI disclosure
+## 🏗️ Architecture
 
-This project was built with AI assistance (Claude). The architecture, business logic, and Portaldot-specific integration were designed by the developer. AI was used to accelerate boilerplate and UI implementation.
+```
+┌─────────────────────────────────────────────────────┐
+│                   Browser (PalletMan)                │
+│                                                      │
+│  ┌──────────────┐  ┌──────────────┐  ┌───────────┐  │
+│  │ Pallet       │  │  Extrinsic   │  │  Results  │  │
+│  │ Sidebar      │  │  Form Panel  │  │  + Saved  │  │
+│  │              │  │              │  │  Calls    │  │
+│  │ api.tx/query │  │ Auto-built   │  │  Panel    │  │
+│  │ parsed live  │  │ from params  │  │           │  │
+│  └──────┬───────┘  └──────┬───────┘  └───────────┘  │
+│         │                 │                          │
+│         └────────┬────────┘                          │
+│                  ▼                                   │
+│         ┌─────────────────┐                          │
+│         │  @polkadot/api  │                          │
+│         │  WebSocket RPC  │                          │
+│         └────────┬────────┘                          │
+└──────────────────┼──────────────────────────────────┘
+                   │ ws://
+                   ▼
+┌─────────────────────────────────────────────────────┐
+│              Portaldot Node                          │
+│         (local WSL2 or remote VM)                   │
+│                                                      │
+│   Alice (port 9944)  ←→  Bob (port 9945)            │
+└─────────────────────────────────────────────────────┘
+```
 
 ---
 
-## License
+## 📁 Project Structure
+
+```
+Portal-studio/
+└── frontend/
+    ├── app/
+    │   ├── page.tsx              # Landing page
+    │   └── app/page.tsx          # Main Studio page
+    ├── components/
+    │   └── studio/
+    │       ├── pallet-sidebar.tsx    # Pallet browser
+    │       ├── extrinsic-panel.tsx   # Transaction form builder
+    │       ├── storage-panel.tsx     # Storage query panel
+    │       ├── result-panel.tsx      # Tx results + history
+    │       ├── registry-panel.tsx    # Saved calls
+    │       └── wallet-button.tsx     # Wallet connect
+    ├── hooks/
+    │   ├── use-polkadot-api.ts   # Node connection + metadata parsing
+    │   ├── use-wallet.ts         # Wallet extension integration
+    │   ├── use-extrinsic.ts      # Tx submission + fee estimation
+    │   └── use-registry.ts       # Saved calls storage
+    ├── constants/
+    │   └── network.ts            # RPC endpoints + chain config
+    └── lib/
+        └── type-mapper.ts        # Substrate type → form field mapping
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | Next.js 16, React 19, TypeScript |
+| **Styling** | Tailwind CSS v4 |
+| **Blockchain** | @polkadot/api, @polkadot/extension-dapp |
+| **Node** | Portaldot testnet (Substrate-based) |
+| **Wallet** | Portaldot browser extension |
+
+---
+
+## 🧪 Test Accounts (Dev Mode)
+
+When running a local `--dev` node, these accounts are pre-funded:
+
+| Account | Address | Balance |
+|---|---|---|
+| **Alice** | `5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY` | 1B POT |
+| **Bob** | `5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty` | 1B POT |
+
+Import Alice into your wallet:
+```
+Mnemonic: bottom drive obey lake curtain smoke basket hold race lonely fit walk
+Derivation path: //Alice
+```
+
+---
+
+## 📈 Roadmap
+
+- [x] Live pallet browser — auto-discovers from node
+- [x] Extrinsic form builder — zero config
+- [x] Storage query panel
+- [x] Fee estimation
+- [x] Transaction submission + result display
+- [x] Saved Calls panel
+- [x] Portaldot wallet integration
+- [ ] Share saved calls via URL
+- [ ] Multi-node support (switch RPC from UI)
+- [ ] ink! contract interaction panel
+- [ ] Export calls as Python SDK snippets
+
+---
+
+## 🤖 AI Disclosure
+
+Built with AI assistance (Claude). Architecture, business logic, and Portaldot-specific integration were designed by the developer. AI was used to accelerate implementation.
+
+---
+
+## 📄 License
 
 MIT
+
+---
+
+<div align="center">
+
+## Built for Portaldot Mini Hackathon — Builder Tools Track 🏆
+
+*The first browser-based developer tool for Portaldot*
+
+**No code. No setup. Just click and build.**
+
+</div>
