@@ -7,16 +7,15 @@ import { useState, type ReactNode } from "react";
 
 const menus = {
   products: [
-    { label: "Pallet Explorer", description: "Browse all Portaldot pallets and extrinsics from live runtime metadata" },
-    { label: "Extrinsic Builder", description: "Auto-generated forms for every extrinsic — no manual SCALE encoding" },
-    { label: "Storage Query", description: "Query any storage item live from the Portaldot node" },
-    { label: "Call History", description: "Save and replay your last 10 extrinsic calls" },
+    { label: "Pallet Explorer", description: "Browse all Portaldot pallets and extrinsics from live runtime metadata", href: "/app" },
+    { label: "Extrinsic Builder", description: "Auto-generated forms for every extrinsic — no manual SCALE encoding", href: "/app" },
+    { label: "Storage Query", description: "Query any storage item live from the Portaldot node", href: "/app" },
+    { label: "Call History", description: "Save and replay your last 10 extrinsic calls", href: "/app" },
   ],
   resources: [
-    { label: "Hackathon PRD", description: "Portaldot Mini Hackathon alignment and judging criteria" },
-    { label: "Portaldot Docs", description: "Official Portaldot developer documentation" },
-    { label: "Demo Video", description: "60-second walkthrough of PalletMan in action" },
-    { label: "GitHub", description: "Open-source repository and setup guide" },
+    { label: "Portaldot Docs", description: "Official Portaldot developer documentation", href: "https://portaldot-dev.readthedocs.io/en/latest/" },
+    { label: "GitHub", description: "Open-source repository and setup guide", href: "https://github.com/Venkat5599/Portal-studio" },
+    { label: "Node Setup Guide", description: "Run a local Portaldot node in minutes", href: "https://github.com/Investorquab/portaldot-node-guide" },
   ],
 };
 
@@ -73,7 +72,7 @@ function DesktopDropdown({
           >
             <div className="bg-frame border border-border rounded-2xl shadow-lg overflow-hidden p-2">
               {menus[menuKey].map((item) => (
-                <a key={item.label} href="#" className="block px-4 py-3 rounded-xl hover:bg-muted transition-colors">
+                <a key={item.label} href={item.href} className="block px-4 py-3 rounded-xl hover:bg-muted transition-colors">
                   <div className="text-sm font-medium text-foreground">{item.label}</div>
                   <div className="text-xs text-muted-foreground mt-0.5">{item.description}</div>
                 </a>
@@ -124,7 +123,7 @@ function MobileExpandable({
               {menus[menuKey].map((item) => (
                 <a
                   key={item.label}
-                  href="#"
+                  href={item.href}
                   className="block py-2 text-sm text-foreground/80 hover:text-foreground"
                   onClick={onClose}
                 >
