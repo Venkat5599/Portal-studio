@@ -23,7 +23,7 @@
 
 <p align="center">
   <a href="https://youtu.be/mVH80GSLKuE">🎬 Demo Video</a> &nbsp;|&nbsp;
-  <a href="https://palletman.xyz">🌐 Live App</a> &nbsp;|&nbsp;
+  <a href="https://palletman-frontend.vercel.app">🌐 Live App</a> &nbsp;|&nbsp;
   <a href="https://github.com/Venkat5599/Palletman">💻 GitHub</a> &nbsp;|&nbsp;
   <a href="https://x.com/Archuser__">🐦 Twitter</a> &nbsp;|&nbsp;
   <a href="https://linkedin.com/in/venkata-ramana-komari-402058316">👤 LinkedIn</a>
@@ -145,7 +145,7 @@ npm run dev
 
 **Video link:** https://youtu.be/mVH80GSLKuE?si=ZGclj_mIV6yzhTN3
 
-**Live demo:** https://palletman.xyz
+**Live demo:** https://palletman-frontend.vercel.app
 
 ### Screenshots
 
