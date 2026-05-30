@@ -1,4 +1,35 @@
-# PalletMan
+<p align="center">
+  <img src="./banner.png" alt="PalletMan Banner" width="100%" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/🟣-PalletMan-7C3AED?style=for-the-badge&labelColor=0a0f12" alt="PalletMan" />
+</p>
+
+<h1 align="center">PalletMan</h1>
+
+<p align="center">
+  <strong>Postman for Portaldot — Browser-Based Pallet Explorer & Transaction Builder</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/🟢_LIVE-Portaldot_Dev_Node-00FF88?style=for-the-badge" alt="Live" />
+  <img src="https://img.shields.io/badge/Track-Builder_Tools-7C3AED?style=for-the-badge" alt="Builder Tools" />
+  <img src="https://img.shields.io/badge/Hackathon-Portaldot_Mini_2026-00D4FF?style=for-the-badge" alt="Hackathon" />
+  <img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT" />
+</p>
+
+<p align="center">
+  <a href="https://youtu.be/mVH80GSLKuE">🎬 Demo Video</a> &nbsp;|&nbsp;
+  <a href="https://palletman.xyz">🌐 Live App</a> &nbsp;|&nbsp;
+  <a href="https://github.com/Venkat5599/Palletman">💻 GitHub</a> &nbsp;|&nbsp;
+  <a href="https://x.com/Archuser__">🐦 Twitter</a> &nbsp;|&nbsp;
+  <a href="https://linkedin.com/in/venkata-ramana-komari-402058316">👤 LinkedIn</a>
+</p>
+
+---
 
 ## Project Overview
 
@@ -115,6 +146,23 @@ npm run dev
 **Video link:** https://youtu.be/mVH80GSLKuE?si=ZGclj_mIV6yzhTN3
 
 **Live demo:** https://palletman.xyz
+
+### Screenshots
+
+**Landing Page**
+<p align="center">
+  <img src="./docs/screenshot-landing.png" alt="PalletMan Landing Page" width="100%" />
+</p>
+
+**Extrinsic Form Builder — Auto-generated from live chain metadata**
+<p align="center">
+  <img src="./docs/screenshot-form.png" alt="Extrinsic Form Builder" width="100%" />
+</p>
+
+**Transaction Finalized — Real on-chain result with events**
+<p align="center">
+  <img src="./docs/screenshot-finalized.png" alt="Transaction Finalized" width="100%" />
+</p>
 
 **Test accounts:**
 
